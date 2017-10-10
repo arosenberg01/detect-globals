@@ -19,7 +19,7 @@ const isTestFile = (file) => {
 }
 
 const report = () => {
-    recursive(config.searchDir, config.ignoreFileTypes, function (err, files) {
+    recursive(config.searchDir, config.ignoreFilePatterns, function (err, files) {
         let filesWithGlobalsCount = 0
 
         if (err) {

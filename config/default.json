@@ -1,6 +1,6 @@
 {
     "searchDir": "/Users/anselrosenberg/Documents/projects/giddy-service-prototype",
-    "ignoreFileTypes": [
+    "ignoreFilePatterns": [
         "min.js",
         "**/node_modules/**",
         "**/public/**"
