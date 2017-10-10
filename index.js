@@ -13,7 +13,7 @@ const nativeGlobals = getNativeGlobals();
 const isTestFile = (file) => {
     const testFileExts = ['.test.js', '.test.disabled.js', '.integration.disabled.js']
     const extMatch = _.find(testFileExts, ext => file.endsWith(ext));
-    const inTestDir = file.includes('/test/')
+    const inTestDir = file.includes('/test/');
     
     return extMatch !== undefined || inTestDir;
 }
