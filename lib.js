@@ -9,6 +9,8 @@ const detect = require('acorn-globals');
 const commander = require('commander');
 
 module.exports = reporter => {
+    reporter = reporter || { emit: () => {} }
+
     function _getNativeGlobals() {
         const nativeGlobalNames = Object.getOwnPropertyNames(global);
         const additionalGlobalNames = [
@@ -61,10 +63,10 @@ module.exports = reporter => {
             const result = { path, outstanding }
 
             if (outstanding.length > 0) {
-                reporter.emit('parsed', result)
+                reporter.emit('detected', result)
             }
     
-            return { path, outstandingGlobals: outstanding }
+            return result;
         })
         .catch(error => ({ path, error }))
     };
@@ -88,15 +90,14 @@ module.exports = reporter => {
                 if (result) {
                     if (result.error) {
                         parseFailed.push(result);
-                    } else if (result.outstandingGlobals.length > 0) {
+                    } else if (result.outstanding.length > 0) {
                         globalsFound.push(result);
                     }
                 }
             });
     
             return { globalsFound, parseFailed, totalCount }
-        })
-
+        });
     };
 
     return {
