@@ -34,10 +34,10 @@ module.exports = reporter => {
 
     function _combineIgnoreGlobals(path, filters) {
         const nativeGlobals = _getNativeGlobals();
-    
+
         let ignoreGlobals = _.reduce(filters, (ignoreGlobals, filter) => {
             const shouldApplyFilter = _checkFilterValidity(path, filter);
-    
+
             if (shouldApplyFilter) {
                 ignoreGlobals = ignoreGlobals.concat(filter.ignoreGlobals);
             }

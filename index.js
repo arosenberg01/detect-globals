@@ -9,41 +9,8 @@ const program = require('commander');
 const colors = require('colors/safe');
 
 const reporter = new EventEmitter();
+const init = require('./init');
 const detectGlobals = require('./lib')(reporter).detectDirGlobals
-
-let ignores = [];
-
-try {
-    const ignoresPath = path.resolve(__dirname, '.dgignores')
-
-    if (fs.existsSync(ignoresPath)) {
-        ignores = fs.readFileSync(ignoresPath, 'utf8').split('\n');
-    }
-
-} catch(err) {
-    console.log(`Error parsing ignores file: ${err}`);
-}
-
-program
-    .version('0.1.0')
-    .option('-d, --directory <dir>', 'absolute path of search directory')
-    .option('-v, --verbose', Boolean)
-    .parse(process.argv);
-
-const dir = program.directory;
-const verbose = program.verbose;
-
-if (!dir) {
-    console.log('Directory required');
-    process.exit(1);
-}
-
-try {
-    const validDir = fs.lstatSync(dir);    
-} catch (err) {
-    console.log('Invalid directory');
-    process.exit(1);
-}
 
 reporter.on('detected', result => {
     const outstanding = result.outstanding
@@ -55,20 +22,20 @@ reporter.on('detected', result => {
 });
 
 console.log('\n')
-return detectGlobals(dir, ignores)
+return detectGlobals(init.dir, init.ignores, init.filters)
 .then(result => {
     const numOutstandingFiles = result.globalsFound.length;
     const numParseFailed = result.parseFailed.length;
     const parsedFailedFiles = _.map(result.parseFailed, 'path');
 
-    if (verbose) {
+    if (init.verbose) {
         const failedOutput = `   ${parsedFailedFiles.join('\n\t')}`;
         console.log('  [Failed parsing]');
         console.log(colors.red(`    count: ${numParseFailed}`));
         console.log(colors.dim(`\t${failedOutput}`));
     }
 
-    console.log(colors.green(`\n${result.totalCount} files found`));
-    console.log(colors.green(`${numOutstandingFiles} files with globals`));
-    console.log(colors.green(`${numParseFailed} files couldn't be scanned`));
+    console.log(colors.green(`\n${result.totalCount} file(s) found`));
+    console.log(colors.green(`${numOutstandingFiles} file(s) with globals`));
+    console.log(colors.green(`${numParseFailed} file(s) couldn't be scanned`));
 });

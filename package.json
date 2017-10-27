@@ -4,19 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate-report": "node ./index.js"
+    "test": "mocha test/"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "acorn-globals": "^4.0.0",
-    "async": "^2.5.0",
     "bluebird": "^3.5.1",
     "colors": "^1.1.2",
     "commander": "^2.11.0",
     "config": "^1.26.2",
     "lodash": "^4.17.4",
-    "read-multiple-files": "^2.0.0-4",
     "recursive-readdir": "^2.2.1"
   },
   "devDependencies": {
