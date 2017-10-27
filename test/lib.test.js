@@ -87,7 +87,7 @@ describe('_combineIgnoreGlobals', () => {
 
 describe('_detectFileGlobals', () => {
     it('should return the globals for a single file', () => {
-        const path = 'test/test-app/app.js';
+        const path = 'test/sample-app/app.js';
         const expected = ['async', 'bluebird'];
         const promise = detectGlobals._detectFileGlobals(path, filters);
 
@@ -102,7 +102,7 @@ describe('_detectFileGlobals', () => {
 
 describe('detectDirGlobals', () => {
     it('should work', () => {
-        const dir = '/Users/anselrosenberg/Documents/temp/so-temp/detect-globals/test/test-app';
+        const dir = '/Users/anselrosenberg/Documents/temp/so-temp/detect-globals/test/sample-app';
         const promise = detectGlobals.detectDirGlobals(dir, [], filters);
 
         return expect(promise).to.be.fulfilled
@@ -115,7 +115,7 @@ describe('detectDirGlobals', () => {
     });
 
     it('should work while ingored filtered file types', () => {
-        const dir = '/Users/anselrosenberg/Documents/temp/so-temp/detect-globals/test/test-app';
+        const dir = '/Users/anselrosenberg/Documents/temp/so-temp/detect-globals/test/sample-app';
         const promise = detectGlobals.detectDirGlobals(dir, ['*.jpg'], filters);
 
         return expect(promise).to.be.fulfilled

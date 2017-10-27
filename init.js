@@ -30,8 +30,8 @@ try {
 program
     .version('0.1.0')
     .option('-d, --directory <dir>', 'absolute path of search directory')
-    .option('-v, --verbose', Boolean)
-    .option('-a --all', Boolean)
+    .option('-v, --verbose', 'output errors')
+    .option('-a --all', 'output additional info')
     .parse(process.argv);
 
 const dir = program.directory;

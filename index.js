@@ -38,7 +38,7 @@ return detectGlobals(init.dir, init.ignores, init.filters)
         allGlobals = _.uniq(allGlobals).sort();
 
         const allGlobalsOutput = `    ${allGlobals.join('\n\t')}`;
-        console.log('-- Total list')
+        console.log('-- All globals')
         console.log(colors.yellow(`    count: ${allGlobals.length}`));
         console.log(`    ${colors.dim(allGlobalsOutput)}\n`);
     }

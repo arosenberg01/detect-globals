@@ -1,0 +1,24 @@
+{
+    "filters": [
+        {
+            "type": "test",
+            "fileExts": [".test.js", ".test.disabled.js", ".integration.disabled.js"],
+            "parentDirs": ["/test/"],
+            "ignoreGlobals": [
+                "after",
+                "afterEach",
+                "before",
+                "beforeEach",
+                "context",
+                "describe",
+                "it",
+                "run",
+                "specify",
+                "xcontext",
+                "xdescribe",
+                "xit",
+                "xspecify"
+            ]
+        }
+    ]
+}

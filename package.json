@@ -4,16 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/"
+    "test": "mocha test"
   },
-  "author": "",
+  "author": "Ansel Rosenberg",
   "license": "ISC",
   "dependencies": {
     "acorn-globals": "^4.0.0",
     "bluebird": "^3.5.1",
     "colors": "^1.1.2",
     "commander": "^2.11.0",
-    "config": "^1.26.2",
     "lodash": "^4.17.4",
     "recursive-readdir": "^2.2.1"
   },
