@@ -6,6 +6,10 @@
   "scripts": {
     "test": "mocha test"
   },
+  "bin": {
+    "detect-globals": "./bin/detect-globals.js"
+  },
+  "preferGlobal": true,
   "author": "Ansel Rosenberg",
   "license": "ISC",
   "dependencies": {

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 'use strict';
 
 const bluebird = require('bluebird');
@@ -9,8 +11,8 @@ const program = require('commander');
 const colors = require('colors/safe');
 
 const reporter = new EventEmitter();
-const init = require('./init');
-const detectGlobals = require('./lib')(reporter).detectDirGlobals
+const init = require('../init');
+const detectGlobals = require('../lib')(reporter).detectDirGlobals
 
 reporter.on('detected', result => {
     const outstanding = result.outstanding
