@@ -1,64 +1,62 @@
 'use strict';
 
-const _ = require('lodash');
 const bluebird = require('bluebird');
 const fs = bluebird.promisifyAll(require('fs'));
-const recursive = require('recursive-readdir');
-const detect = require('acorn-globals');
-const config = require('config');
-const getNativeGlobals = require('./native-globals');
+const program = require('commander');
+const colors = require('colors/safe');
+const detectGlobals = require('./lib').detectDirGlobals
 
-const nativeGlobals = getNativeGlobals();
+program
+    .version('0.1.0')
+    .option('-d, --directory <dir>', 'absolute path of search directory')
+    .option('-r --reporter <reporter>', 'reporter type')
+    .parse(process.argv);
 
-const isTestFile = (file) => {
-    const testFileExts = ['.test.js', '.test.disabled.js', '.integration.disabled.js']
-    const extMatch = _.find(testFileExts, ext => file.endsWith(ext));
-    const inTestDir = file.includes('/test/');
-    
-    return extMatch !== undefined || inTestDir;
-}
+const dir = program.directory;
+const reporter = program.reporter;
 
-const report = () => {
-    recursive(config.searchDir, config.ignoreFilePatterns, function (err, files) {
-        let filesWithGlobalsCount = 0
 
-        if (err) {
-            console.log(`Error finding files: ${err}`);
+const reporters = {
+    default: {
+        report: data => {
+
         }
+    },
+    file: {
+        report: data => {
 
-        _.forEach(files, file => {
-            const src = fs.readFileSync(file, 'utf8');
-
-            try {
-                const scope = detect(src);
-                const filteredScope = _.filter(scope, node => {
-                    if (isTestFile(file)) {
-                        return !nativeGlobals.defaultPlusTest.has(node.name);
-                    } else {
-                        return !nativeGlobals.default.has(node.name);
-                    }
-                }); 
-
-                if (filteredScope.length > 0) {
-                    const globalVars = _.map(filteredScope, 'name');
-                    filesWithGlobalsCount++;
-                    
-                    console.log(file)
-                    console.log(globalVars)
-                    console.log('-------------')           
-                }
-            } catch(err) {
-                console.log('*****')
-                console.log('Detect failed:', err);
-                console.log(file);
-                console.log('*****')
-            }
-        });
-
-        console.log(`Files searched: ${files.length}`);
-        console.log(`Offending files found: ${filesWithGlobalsCount}`);
-    });  
+        }
+    }
 }
 
-report();
+if (!dir) {
+    console.log('Directory required');
+    process.exit(1);
+}
 
+try {
+    const validDir = fs.lstatSync(dir);    
+} catch (err) {
+    console.log('Invalid directory');
+    process.exit(1);
+}
+
+if (!reporter) {
+    // reporter = 'default';
+} else {
+
+}
+
+
+return detectGlobals(dir, [])
+.then(result => {
+
+    result.globalsFound.forEach(global => {
+        const outstanding = global.outstandingGlobals
+        const namesOutput = outstanding.join('\n\t');
+
+        console.log(`  ${global.path}`);
+        console.log(colors.cyan(`    unique count: ${outstanding.length}`))
+        console.log(`\t${colors.dim(namesOutput)}\n`)
+    })
+});

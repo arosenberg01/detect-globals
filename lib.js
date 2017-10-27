@@ -47,7 +47,7 @@ exports._combineIgnoreGlobals = (path, filters) => {
     return new Set(ignoreGlobals);
 };
 
-exports._detectOutstandingGlobalsAsync = (path, filters) => {
+exports._detectFileGlobals = (path, filters) => {
     return fs.readFileAsync(path, 'utf8')
     .then(contents => {
         const ignoreGlobals = exports._combineIgnoreGlobals(path, filters);
@@ -61,11 +61,29 @@ exports._detectOutstandingGlobalsAsync = (path, filters) => {
     }).catch(error => { path, error });
 };
 
-exports.detectGlobalsAsyncExport = (dir, ignores, filters) => {
+exports.detectDirGlobals = (dir, ignores, filters) => {
+    ignores = ignores || [];
+
     return readdir(dir, ignores)
     .then(paths => {
-        paths = paths.map(path => exports._detectOutstandingGlobalsAsync(path, filters));
+        paths = paths.map(path => exports._detectFileGlobals(path, filters));
 
         return bluebird.all(paths);
+    })
+    .then(results => {
+        const globalsFound = [];
+        const parseFailed = [];
+
+        results.forEach(result => {
+            if (result) {
+                if (result.error) {
+                    parseFailed.push(result);
+                } else if (result.outstandingGlobals.length > 0) {
+                    globalsFound.push(result);
+                }
+            }
+        });
+
+        return { globalsFound, parseFailed }
     });
 };
