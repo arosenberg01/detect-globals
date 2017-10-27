@@ -1,33 +1,23 @@
 'use strict';
 
+const EventEmitter = require('events').EventEmitter;
+const reporter = new EventEmitter();
+
+const _ = require('lodash');
 const bluebird = require('bluebird');
 const fs = bluebird.promisifyAll(require('fs'));
 const program = require('commander');
 const colors = require('colors/safe');
-const detectGlobals = require('./lib').detectDirGlobals
+const detectGlobals = require('./lib')(reporter).detectDirGlobals
 
 program
     .version('0.1.0')
     .option('-d, --directory <dir>', 'absolute path of search directory')
-    .option('-r --reporter <reporter>', 'reporter type')
+    .option('-v, --verbose', 'show additionall information', Boolean)
     .parse(process.argv);
 
 const dir = program.directory;
-const reporter = program.reporter;
-
-
-const reporters = {
-    default: {
-        report: data => {
-
-        }
-    },
-    file: {
-        report: data => {
-
-        }
-    }
-}
+const verbose = program.verbose;
 
 if (!dir) {
     console.log('Directory required');
@@ -41,22 +31,30 @@ try {
     process.exit(1);
 }
 
-if (!reporter) {
-    // reporter = 'default';
-} else {
+reporter.on('parsed', result => {
+    const outstanding = result.outstanding
+    const namesOutput = outstanding.join('\n\t');
 
-}
+    console.log(`  ${result.path}`);
+    console.log(colors.cyan(`    unique count: ${outstanding.length}`))
+    console.log(`\t${colors.dim(namesOutput)}\n`)
+});
 
-
+console.log('\n')
 return detectGlobals(dir, [])
 .then(result => {
+    const numOutstandingFiles = result.globalsFound.length;
+    const numParseFailed = result.parseFailed.length;
+    const parsedFailedFiles = _.map(result.parseFailed, 'path');
 
-    result.globalsFound.forEach(global => {
-        const outstanding = global.outstandingGlobals
-        const namesOutput = outstanding.join('\n\t');
+    if (verbose) {
+        const failedOutput = `${parsedFailedFiles.join('\n\t')}`;
+        console.log('  [Failed parsing]');
+        console.log(colors.red(`    count: ${numParseFailed}`));
+        console.log(colors.dim(`\t${failedOutput}`));
+    }
 
-        console.log(`  ${global.path}`);
-        console.log(colors.cyan(`    unique count: ${outstanding.length}`))
-        console.log(`\t${colors.dim(namesOutput)}\n`)
-    })
+    console.log(colors.green(`\n${result.totalCount} files found`));
+    console.log(colors.green(`${numOutstandingFiles} files with globals`));
+    console.log(colors.green(`${numParseFailed} files couldn't be scanned`));
 });
