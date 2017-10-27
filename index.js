@@ -28,14 +28,29 @@ return detectGlobals(init.dir, init.ignores, init.filters)
     const numParseFailed = result.parseFailed.length;
     const parsedFailedFiles = _.map(result.parseFailed, 'path');
 
+    if (init.all) {
+        let allGlobals = _.reduce(result.globalsFound, (accum, el) => {
+            accum = accum.concat(el.outstanding);
+
+            return accum;
+        }, []);
+
+        allGlobals = _.uniq(allGlobals).sort();
+
+        const allGlobalsOutput = `    ${allGlobals.join('\n\t')}`;
+        console.log('-- Total list')
+        console.log(colors.yellow(`    count: ${allGlobals.length}`));
+        console.log(`    ${colors.dim(allGlobalsOutput)}\n`);
+    }
+
     if (init.verbose) {
         const failedOutput = `   ${parsedFailedFiles.join('\n\t')}`;
-        console.log('  [Failed parsing]');
+        console.log('-- Failed parsing');
         console.log(colors.red(`    count: ${numParseFailed}`));
         console.log(colors.dim(`\t${failedOutput}`));
     }
 
     console.log(colors.green(`\n${result.totalCount} file(s) found`));
     console.log(colors.green(`${numOutstandingFiles} file(s) with globals`));
-    console.log(colors.green(`${numParseFailed} file(s) couldn't be scanned`));
+    console.log(colors.green(`${numParseFailed} file(s) failed parsing`));
 });
