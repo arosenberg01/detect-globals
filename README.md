@@ -1,6 +1,6 @@
 # Detect Globals
 
-Recursively detect Javascript global variable usage from a file-by-file perspective. Completely ignoring file types by pattern and and ignore certain globals for certain file types is configurable.
+Recursively detect Javascript global variable usage from a file-by-file perspective. Completely ignoring file types by pattern and and ignoring certain globals for certain file types is configurable.
 
 Installation
 ```
