@@ -1,30 +1,54 @@
 # Detect Globals
 
-Recursively detect global variable usage from a file-by-file perspective. Attemps to filter Node.js globals and some testing globals.
+Recursively detect Javascript global variable usage from a file-by-file perspective. Completely ignoring file types by pattern and and ignore certain globals for certain file types is configurable.
 
-Config with config/default.json
-```json
-{
-    "searchDir": <starting directory>,
-    "ignoreFilePatterns": <array of files patterns to ignore>,
-    "ignoreDirs": <array of dirs to ignore>
-}
+Installation
 ```
-Ex:
+git clone https://github.com/arosenberg01/detect-globals.git
+```
 
+Getting started
+```
+# node ./bin/detect-globals -d /Users/you/Documents/projects/project1
+```
+
+Help
+```
+# node ./bin/detect-glbobals -h
+```
+
+
+Configure ignoring files completely with .dgignores
+```
+!*.js
+node_modules
+```
+
+
+Configure ignoring specific globals certain file paths/extensions with .dgfilters.json
 ```json
 {
-    "searchDir": "/Users/arosenberg/Documents/projects/sampleProject",
-    "ignoreFilePatterns": [
-        "min.js",
-        "**/node_modules/**",
-        "**/public/**"
-    ],
-    "ignoreDirs": [
-        "scripts",
-        "coverage",
-        "node_modules",
-        "scripts"
+    "filters": [
+        {
+            "type": "test",
+            "fileExts": [".test.js", ".test.disabled.js", ".integration.disabled.js"],
+            "parentDirs": ["/test/"],
+            "ignoreGlobals": [
+                "after",
+                "afterEach",
+                "before",
+                "beforeEach",
+                "context",
+                "describe",
+                "it",
+                "run",
+                "specify",
+                "xcontext",
+                "xdescribe",
+                "xit",
+                "xspecify"
+            ]
+        }
     ]
 }
 ```
