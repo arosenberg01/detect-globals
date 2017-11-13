@@ -9,12 +9,12 @@ git clone https://github.com/arosenberg01/detect-globals.git
 
 Getting started
 ```
-# node ./bin/detect-globals -d /Users/you/Documents/projects/project1
+node ./bin/detect-globals -d /Users/you/Documents/projects/project1
 ```
 
 Help
 ```
-# node ./bin/detect-glbobals -h
+node ./bin/detect-glbobals -h
 ```
 
 
